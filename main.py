@@ -1,7 +1,13 @@
+from start import cin
+from NKA.parser_to_dict import parser
 
-def print_hi(name):
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+
+def main():
+    # stt = cin()
+    dic = parser('ab(a|b)')
+
+    print(dic)
 
 
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    main()
