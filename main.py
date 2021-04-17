@@ -1,10 +1,11 @@
 from start import cin
 from NKA.parser_to_dict import parser
+from dot import dict_dot_notate
 
 
 def main():
     # stt = cin()
-    dic = parser('ab(a|b)')
+    dic = parser('(a|b)(a|b)')
 
     print(dic)
 
