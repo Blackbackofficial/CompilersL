@@ -4,7 +4,7 @@ from NKA.parser_to_dict import parser
 
 def main():
     # stt = cin()
-    dic = parser('a*b*')
+    dic = parser('abc')
     print(dic)
 
 

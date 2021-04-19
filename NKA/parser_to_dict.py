@@ -21,7 +21,7 @@ def parser(string):
 
         slice_s = i
         if string[i] == '(':
-            while (i <= size - 1 or string[i - 1] == '(') and string[i] != '|' and string[i] != '*':
+            while i <= size - 1 or string[i - 1] == '(':
                 if string[i] != ')':
                     i += 1
                 elif i <= 1:
