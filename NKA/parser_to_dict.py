@@ -1,7 +1,5 @@
 def parser(str):
     num = 1
-    start = 'q0'
-    end = 'q1'
     num_of_graph = 2
     struct = dict()
     i = 0
