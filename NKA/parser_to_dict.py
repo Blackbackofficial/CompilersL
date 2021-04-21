@@ -3,7 +3,7 @@ def brackets_parser(line, num_graph=2):
         struct = dict()
         i = 0
         size = len(line)
-
+        u = len(line)
         while i < size:
             while i < size and (i < size and line[i] != '(' and line[i] != '|' and line[i] != '*' and line[i] != ')'):
                 if size == 1:
@@ -21,9 +21,17 @@ def brackets_parser(line, num_graph=2):
 
             slice_s = i
             if line[i] == '(':
+                next_brackets = 0
                 while i < size or line[i - 1] == '(':
-                    if line[i] != ')':
+                    if line[i] != ')' or next_brackets > 0:
                         i += 1
+                        if next_brackets > 0 and line[i] == ')':
+                            next_brackets -= 1
+                            if i == size - 2:
+                                i += 1
+                        elif line[i] == '(':
+                            next_brackets += 1
+
                     elif line[i] == ')' and i == size - 1 and slice_s == 0:
                         struct.update({'q0': {line[slice_s:i + 1]: 'q1'}})
                         return struct, num_graph
@@ -46,11 +54,18 @@ def brackets_parser(line, num_graph=2):
             if i < size and line[i] == '|':
                 i += 1
                 f_slice = False
+                next_brackets = 0
                 if line[i] == '(':
                     slice_s = i
                     f_slice = True
-                    while line[i] != ')':
+                    while line[i] != ')' or next_brackets > 0:
                         i += 1
+                        if line[i] == '(':
+                            next_brackets += 1
+                        elif line[i] == ')' and next_brackets > 0:
+                            next_brackets -= 1
+                            if i == size - 2:
+                                i += 1
                 if struct.get('q{}'.format(num_graph - 1)) is None:
                     ver_start = 'q0'
                     last_dict = struct.get(ver_start)
@@ -130,7 +145,7 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                     new_struct.update({start_q: {line[i]: 'q{}'.format(num_graph + 1)}})
                 else:
                     new_struct.update({'q{}'.format(num_graph - 1): {line[i]: 'q{}'.format(num_graph)}})
-            num_graph += 1
+                num_graph += 1
         i += 1
     return new_struct, num_graph
 
