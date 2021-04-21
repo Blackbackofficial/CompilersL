@@ -205,3 +205,10 @@ def depth_search(struct, num_graph=2):
     except IndexError:
         print("String index out of range!")
         exit(1)
+
+
+def parser_to_nka(line):
+    start_dict = brackets_parser(line)
+    parser_dict = depth_search(start_dict[0], start_dict[1])
+    print(parser_dict)
+    return parser_dict
