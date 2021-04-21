@@ -122,14 +122,14 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                     line  # что-то будет потом, случай |
             else:
                 if i == len(line) - 1 and end_q == 'q1':
-                    new_struct.update({'q{}'.format(num_graph-1): {line[i]: end_q}})
+                    new_struct.update({'q{}'.format(num_graph): {line[i]: end_q}})
                     break
                 elif i == len(line) - 1 and end_q != 'q1':
                     new_struct.update({'q{}'.format(num_graph): {line[i]: end_q}})
                 elif i == 0:
-                    new_struct.update({start_q: {line[i]: 'q{}'.format(num_graph)}})
+                    new_struct.update({start_q: {line[i]: 'q{}'.format(num_graph + 1)}})
                 else:
-                    new_struct.update({'q{}'.format(num_graph-1): {line[i]: 'q{}'.format(num_graph)}})
+                    new_struct.update({'q{}'.format(num_graph - 1): {line[i]: 'q{}'.format(num_graph)}})
             num_graph += 1
         i += 1
     return new_struct, num_graph
@@ -150,13 +150,13 @@ def depth_search(struct, num_graph=2):
                     j += 1
                     continue
                 else:
-                    start_q = items_key[0]
+                    start_q = items_key[i]
                     end_q = struct[items_key[i]].get(list_items[j])
                     # чистим неверные ссылки q
                     if i < size_struct and i != 0:
                         save_values = struct[items_key[i]].pop(list_items[j])
-                        struct.update({'q{}'.format(num_graph): {list_items[j]: save_values}})
-                        items_key.insert(i, 'q{}'.format(num_graph))
+                        struct.update({'q{}'.format(num_graph + 1): {list_items[j]: save_values}})
+                        items_key.insert(i, 'q{}'.format(num_graph + 1))
 
                     edit_dict = regex_parser(list_items[j][1:len(list_items[j]) - 1], num_graph, start_q, end_q)
                     k = 0
@@ -177,7 +177,9 @@ def depth_search(struct, num_graph=2):
                                 struct.update({'{}'.format(keys[k]): edit_dict[0].get(key)})
                             k += 1
                         # struct[items_key[i]].update(edit_dict[0])
+
                     struct[items_key[i]].pop(list_items[j])
+                    items_key.sort()  # для упорядочевания items_key, гда элементы хранятся и дабавляются ссылки
                     num_graph = edit_dict[1]
                 j += 1
             i += 1
