@@ -4,7 +4,7 @@ from NKA.parser_to_dict import parser_to_nka
 
 def main():
     # stt = cin()
-    parser_to_nka('(ab)|(c|d)')
+    parser_to_nka('(a|sb|i|e|r)')
 
 
 if __name__ == '__main__':
