@@ -20,15 +20,13 @@ def brackets_parser(line, num_graph=2):
                 i += 1
 
             slice_s = i
-            if line[i] == '(':
-                next_brackets = 0
+            if line[i] == '(' or line[i] == ')':
+                next_brackets = 1
                 while i < size or line[i - 1] == '(':
-                    if line[i] != ')' or next_brackets > 0:
+                    if next_brackets > 0:
                         i += 1
                         if next_brackets > 0 and line[i] == ')':
                             next_brackets -= 1
-                            if i == size - 2:
-                                i += 1
                         elif line[i] == '(':
                             next_brackets += 1
                     elif line[i] == ')' and i == size - 1 and slice_s == 0:
@@ -128,16 +126,23 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
     try:
         new_struct = dict()
         i = 0
-        if line[i] == '(' and line[len(line) - 1] == ')':
+        if line[i] == '(' and '(' in line[i+1:len(line)-2] and line[i+1:len(line)-2].count('(') > 1:
             return regex_parser(line[i + 1:len(line) - 1], num_graph, start_q, end_q)
 
         while i < len(line):
             if line[i] != '|' and line[i] != '(' and line[i] != ')' and line[i] != '*':
                 if i != len(line) - 1 and (line[i + 1] == '*' or line[i + 1] == '|'):
-                    if i != len(line) - 1 and line[i + 2] == '|':
-                        line  # что-то будет потом, случай *|
-                    elif i != len(line) - 1 and line[i + 1] == '|':
-                        line  # что-то будет потом, случай |
+                    if i < len(line) and line[i+2] == '|':  # что-то будет потом, случай *|
+                        line
+                    elif i < len(line) and line[i+1] == '|':  # что-то будет потом, случай |
+                        if i == 0:
+                            new_struct.update({start_q: {line[i]: end_q}})
+                        else:
+                            if list[i + 2] != '(':
+                                new_struct.update({'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph + 1)}})
+                                i += 2
+                                new_struct['q{}'.format(num_graph)].update({line[i]: 'q{}'.format(num_graph + 1)})
+                                num_graph += 1
                 else:
                     if i == len(line) - 1:
                         new_struct.update({'q{}'.format(num_graph): {line[i]: end_q}})
