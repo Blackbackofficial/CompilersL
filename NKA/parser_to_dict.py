@@ -126,7 +126,9 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
     try:
         new_struct = dict()
         i = 0
-        if line[i] == '(' and '(' in line[i+1:len(line)-2] and line[i+1:len(line)-2].count('(') > 1:
+        if line[i] == '(' and line[i+1:len(line)-1].count('(') > 0:
+            return regex_parser(line[i + 1:len(line) - 1], num_graph, start_q, end_q)
+        elif line[i] == '(' and line[i+1:len(line)-2].count('(') == 0:
             return regex_parser(line[i + 1:len(line) - 1], num_graph, start_q, end_q)
 
         while i < len(line):
@@ -135,8 +137,10 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                     if i < len(line) and line[i+2] == '|':  # что-то будет потом, случай *|
                         line
                     elif i < len(line) and line[i+1] == '|':  # что-то будет потом, случай |
-                        if i == 0:
+                        if list[i + 2] != '(' and i == 0:
                             new_struct.update({start_q: {line[i]: end_q}})
+                            i += 2
+                            new_struct[start_q].update({line[i]: end_q})
                         else:
                             if list[i + 2] != '(':
                                 new_struct.update({'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph + 1)}})
@@ -150,7 +154,7 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                     elif i == 0:
                         new_struct.update({start_q: {line[i]: 'q{}'.format(num_graph + 1)}})
                     else:
-                        new_struct.update({'q{}'.format(num_graph - 1): {line[i]: 'q{}'.format(num_graph)}})
+                        new_struct.update({'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph)}})
                     num_graph += 1
             i += 1
         return new_struct, num_graph
