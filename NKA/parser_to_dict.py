@@ -161,7 +161,6 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
     except Exception as ex:
         print("Exceptions in regex_parser: {}".format(ex.args[-1]))
 
-
 def depth_search(struct, num_graph=2):
     try:
         i = 0
