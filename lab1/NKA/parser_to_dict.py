@@ -152,9 +152,36 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                         new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
                                     except KeyError:
                                         new_struct.update({'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph)}})
-
                                 else:
-                                    new_struct['q0'].update({'ε': 'q{}'.format(num_graph)})
+                                    try:
+                                        new_struct['q{}'.format(num_graph)].update(
+                                            {line[start]: 'q{}'.format(num_graph + 1)})
+                                    except KeyError:
+                                        new_struct.update(
+                                            {'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph + 1)}})
+                            num_graph += 1
+                        else:
+                            new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
+                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': 'q{}'.format(num_graph + 2)}})
+                            num_graph += 1
+
+                            if i + 3 != '(':
+                                start = i
+                                i += 3
+                                if len(line) - 1 == i:
+                                    new_struct['q{}'.format(num_graph-1)].update({line[i]: end_q})
+                                    new_struct['q{}'.format(num_graph)].update({'ε': end_q})
+                                    try:
+                                        new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
+                                    except KeyError:
+                                        new_struct.update({'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph)}})
+                                else:
+                                    try:
+                                        new_struct['q{}'.format(num_graph)].update(
+                                            {line[start]: 'q{}'.format(num_graph + 1)})
+                                    except KeyError:
+                                        new_struct.update(
+                                            {'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph + 1)}})
                             num_graph += 1
                     elif i < len(line) and line[i + 1] == '|':  # случай a|b
                         if line[i + 2] != '(' and i == 0:
@@ -192,7 +219,6 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                 if i == len(line) - 1:
                                     if start - 3 == 0:
                                         new_struct.update({start_q: {line[start-3]: end_q}})
-                                        # new_struct.pop('q{}'.format(num_graph))
                                     else:
                                         new_struct.update({'q{}'.format(num_graph): {line[start - 3]: end_q}})
                                 struct = regex_parser(line[start:i], num_graph, 'q{}'.format(num_graph), end_q)
