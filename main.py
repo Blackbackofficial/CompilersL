@@ -1,10 +1,8 @@
-from start import cin
-from NKA.parser_to_dict import parser_to_nka
+from CompilersL.lab1.start import start_l1
 
 
 def main():
-    # stt = cin()
-    parser_to_nka('(a|b)*')
+    start_l1()
 
 
 if __name__ == '__main__':

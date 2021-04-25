@@ -1,3 +1,5 @@
+from CompilersL.lab1.NKA.parser_to_dict import parser_to_nka
+
 
 def cin():
     print("Регулярное выражение:")
@@ -9,3 +11,8 @@ def cin():
 
 def cout(dict):
     print(dict)
+
+
+def start_l1():
+    # stt = cin()
+    parser_to_nka('(a|b)*')
