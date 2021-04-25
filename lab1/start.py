@@ -10,11 +10,7 @@ def cin():
     return str_in_reg, str_in_value
 
 
-def out(dict):
-    print(dict)
-
-
 def start_l1():
     # stt = cin()
-    nka_dict = parser_to_nka('(a|b)*abb')
+    nka_dict = parser_to_nka('(aa*|bb)|(ab)')
     dka_dict = parser_to_dka(nka_dict)
