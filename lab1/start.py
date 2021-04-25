@@ -15,4 +15,4 @@ def out(dict):
 
 def start_l1():
     # stt = cin()
-    parser_to_nka('(a*)')
+    parser_to_nka('(va*bcd)')

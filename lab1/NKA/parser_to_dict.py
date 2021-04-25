@@ -241,13 +241,13 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                         continue
                     elif i < len(line) - 1 and line[i + 1] == '*':
                         if i == 0:
-                            new_struct.update({start_q: {'ε': 'q{}'.format(num_graph)}})
+                            new_struct.update({start_q: {'ε': 'q{}'.format(num_graph + 1)}})
                         else:
                             new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
                         if i == len(line) - 2:
                             new_struct.update({'q{}'.format(num_graph + 1): {'ε': end_q}})
                         else:
-                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': 'q{}'.format(num_graph + 1)}})
+                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': 'q{}'.format(num_graph + 2)}})
                         new_struct['q{}'.format(num_graph + 1)].update({line[i]: 'q{}'.format(num_graph + 1)})
                         num_graph += 2
                 else:
