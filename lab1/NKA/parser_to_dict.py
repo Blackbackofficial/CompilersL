@@ -137,7 +137,7 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
         while i < len(line):
             if line[i] != '|' and line[i] != '(' and line[i] != ')' and line[i] != '*':
                 if i != len(line) - 1 and (line[i + 1] == '*' or line[i + 1] == '|'):
-                    if i < len(line) and line[i + 2] == '|':  # случай a*|b
+                    if i < len(line) and i + 2 < len(line) - 1 and line[i + 2] == '|':  # случай a*|b
                         if i == 0:
                             new_struct.update({'q0': {'ε': 'q{}'.format(num_graph)}})
                             new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
@@ -239,6 +239,17 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                             new_struct['q{}'.format(num_graph)].update({elem: end_q})
                                     except KeyError:
                                         continue
+                    elif i < len(line) - 1 and line[i + 1] == '*':
+                        if i == 0:
+                            new_struct.update({start_q: {'ε': 'q{}'.format(num_graph)}})
+                        else:
+                            new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
+                        if i == len(line) - 2:
+                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': end_q}})
+                        else:
+                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': 'q{}'.format(num_graph + 1)}})
+                        new_struct['q{}'.format(num_graph + 1)].update({line[i]: 'q{}'.format(num_graph + 1)})
+                        num_graph += 2
                 else:
                     if i == len(line) - 1:
                         if i == 0:
@@ -272,7 +283,6 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                 struct[0]['q{}'.format(num_graph-1)][elem] = 'q1'
                         i += 2
                         num_graph -= 1
-
                     new_struct.update(struct[0])
                 else:
                     if i == len(line) - 1:
