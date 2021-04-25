@@ -1,3 +1,4 @@
+from CompilersL.lab1.DKA.nka_to_dka import parser_to_dka
 from CompilersL.lab1.NKA.parser_to_dict import parser_to_nka
 
 
@@ -15,4 +16,5 @@ def out(dict):
 
 def start_l1():
     # stt = cin()
-    parser_to_nka('(va*|bc)')
+    nka_dict = parser_to_nka('(a|b)*abb')
+    dka_dict = parser_to_dka(nka_dict)
