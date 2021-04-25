@@ -178,12 +178,14 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                     except KeyError:
                                         new_struct.update({'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph)}})
                                 else:
+                                    new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
+                                    new_struct['q{}'.format(num_graph)].update({'ε': 'q{}'.format(num_graph + 1)})
                                     try:
                                         new_struct['q{}'.format(num_graph)].update(
-                                            {line[start]: 'q{}'.format(num_graph + 1)})
+                                            {line[i]: 'q{}'.format(num_graph + 1)})
                                     except KeyError:
                                         new_struct.update(
-                                            {'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph + 1)}})
+                                            {'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph + 1)}})
                             num_graph += 1
                     elif i < len(line) and line[i + 1] == '|':  # случай a|b
                         if line[i + 2] != '(' and i == 0:
