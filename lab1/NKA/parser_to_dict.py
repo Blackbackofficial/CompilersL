@@ -137,9 +137,26 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
         while i < len(line):
             if line[i] != '|' and line[i] != '(' and line[i] != ')' and line[i] != '*':
                 if i != len(line) - 1 and (line[i + 1] == '*' or line[i + 1] == '|'):
-                    if i < len(line) and line[i + 2] == '|':  # что-то будет потом, случай *|
-                        line
-                    elif i < len(line) and line[i + 1] == '|':  # что-то будет потом, случай |
+                    if i < len(line) and line[i + 2] == '|':  # случай a*|b
+                        if i == 0:
+                            new_struct.update({'q0': {'ε': 'q{}'.format(num_graph)}})
+                            new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
+
+                            if i + 3 != '(':
+                                start = i
+                                i += 3
+                                if len(line) - 1 == i:
+                                    new_struct['q0'].update({line[i]: end_q})
+                                    new_struct['q2'].update({'ε': end_q})
+                                    try:
+                                        new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
+                                    except KeyError:
+                                        new_struct.update({'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph)}})
+
+                                else:
+                                    new_struct['q0'].update({'ε': 'q{}'.format(num_graph)})
+                            num_graph += 1
+                    elif i < len(line) and line[i + 1] == '|':  # случай a|b
                         if line[i + 2] != '(' and i == 0:
                             # (a|sb|i|e|r)
                             new_struct.update({start_q: {line[i]: end_q}})
@@ -226,9 +243,6 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                 struct[0]['q{}'.format(num_graph-1)][elem] = 'q1'
                         i += 2
                         num_graph -= 1
-
-                    elif line[i + 1] == '*':  # случай (ab)*
-                        line
 
                     new_struct.update(struct[0])
                 else:
