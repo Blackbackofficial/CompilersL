@@ -212,7 +212,24 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                     i += 1
 
                 if start == 1:
-                    struct = regex_parser(line[start:i], num_graph, start_q, 'q{}'.format(num_graph))
+                    struct = regex_parser(line[start:i + 1], num_graph, start_q, 'q{}'.format(num_graph))
+                    num_graph = struct[1]
+                    if line[i + 1] == '|' and line[i + 2] != '(':
+                        if i + 2 == len(line) - 1:
+                            struct_p = regex_parser(line[i + 2], num_graph-1, start_q, end_q)
+                        else:
+                            struct_p = regex_parser(line[i + 2], num_graph-1, start_q, 'q{}'.format(num_graph))
+                        struct[0]['q{}'.format(num_graph-1)].update(struct_p[0].get('q{}'.format(num_graph-1)))
+
+                        if list(struct_p[0].get('q{}'.format(num_graph - 1)).values())[0] == 'q1':
+                            for elem in struct[0]['q{}'.format(num_graph-1)]:
+                                struct[0]['q{}'.format(num_graph-1)][elem] = 'q1'
+                        i += 2
+                        num_graph -= 1
+
+                    elif line[i + 1] == '*':  # случай (ab)*
+                        line
+
                     new_struct.update(struct[0])
                 else:
                     if i == len(line) - 1:
@@ -221,7 +238,7 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                     else:
                         struct = regex_parser(line[start:i], num_graph, 'q{}'.format(num_graph), 'q{}'.format(num_graph))
                         new_struct.update(struct[0])
-                num_graph = struct[1] + 1
+                num_graph = struct[1]
             i += 1
         return new_struct, num_graph
     except Exception as ex:
