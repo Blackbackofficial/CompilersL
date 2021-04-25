@@ -1,3 +1,4 @@
+from CompilersL.lab1.DKA.nka_to_dka import parser_to_dka
 from CompilersL.lab1.NKA.parser_to_dict import parser_to_nka
 
 
@@ -9,10 +10,7 @@ def cin():
     return str_in_reg, str_in_value
 
 
-def out(dict):
-    print(dict)
-
-
 def start_l1():
     # stt = cin()
-    parser_to_nka('(va*|bc)')
+    nka_dict = parser_to_nka('(aa*|bb)|(ab)')
+    dka_dict = parser_to_dka(nka_dict)

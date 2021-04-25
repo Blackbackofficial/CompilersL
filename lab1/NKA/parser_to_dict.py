@@ -125,179 +125,174 @@ def brackets_parser(line, num_graph=2):
         exit(1)
 
 
-def regex_parser(line, num_graph, start_q=None, end_q=None):
+def regex_parser(line, graph, start_q=None, end_q=None):
     try:
-        new_struct = dict()
+        new_dict = dict()
         i = 0
         if line[i] == '(' and line[len(line) - 1] == ')' and line[i + 1:len(line) - 1].count('(') > 0:
-            return regex_parser(line[i + 1:len(line) - 1], num_graph, start_q, end_q)
+            return regex_parser(line[i + 1:len(line) - 1], graph, start_q, end_q)
         elif line[i] == '(' and line[len(line) - 1] == ')' and line[i + 1:len(line) - 2].count('(') == 0:
-            return regex_parser(line[i + 1:len(line) - 1], num_graph, start_q, end_q)
+            return regex_parser(line[i + 1:len(line) - 1], graph, start_q, end_q)
 
         while i < len(line):
             if line[i] != '|' and line[i] != '(' and line[i] != ')' and line[i] != '*':
                 if i != len(line) - 1 and (line[i + 1] == '*' or line[i + 1] == '|'):
                     if i < len(line) and i + 2 < len(line) - 1 and line[i + 2] == '|':  # случай a*|b
+                        start = i
                         if i == 0:
-                            new_struct.update({'q0': {'ε': 'q{}'.format(num_graph)}})
-                            new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
+                            new_dict.update({'q0': {'ε': 'q{}'.format(graph)}})
+                            new_dict.update({'q{}'.format(graph): {'ε': 'q{}'.format(graph + 1)}})
 
                             if i + 3 != '(':
-                                start = i
                                 i += 3
                                 if len(line) - 1 == i:
-                                    new_struct['q0'].update({line[i]: end_q})
-                                    new_struct['q2'].update({'ε': end_q})
+                                    new_dict['q0'].update({line[i]: end_q})
+                                    new_dict['q2'].update({'ε': end_q})
                                     try:
-                                        new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
+                                        new_dict['q{}'.format(graph)].update({line[start]: 'q{}'.format(graph)})
                                     except KeyError:
-                                        new_struct.update({'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph)}})
+                                        new_dict.update({'q{}'.format(graph): {line[start]: 'q{}'.format(graph)}})
                                 else:
-                                    new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
-                                    new_struct['q{}'.format(num_graph)].update({'ε': 'q{}'.format(num_graph + 1)})
+                                    new_dict['q{}'.format(graph)].update({line[start]: 'q{}'.format(graph)})
+                                    new_dict['q{}'.format(graph)].update({'ε': 'q{}'.format(graph + 1)})
                                     try:
-                                        new_struct['q{}'.format(num_graph)].update(
-                                            {line[i]: 'q{}'.format(num_graph + 1)})
+                                        new_dict['q{}'.format(graph)].update({line[i]: 'q{}'.format(graph + 1)})
                                     except KeyError:
-                                        new_struct.update(
-                                            {'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph + 1)}})
-                            num_graph += 1
+                                        new_dict.update({'q{}'.format(graph): {line[i]: 'q{}'.format(graph + 1)}})
+                            graph += 1
                         else:
-                            new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
-                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': 'q{}'.format(num_graph + 2)}})
-                            num_graph += 1
+                            new_dict.update({'q{}'.format(graph): {'ε': 'q{}'.format(graph + 1)}})
+                            new_dict.update({'q{}'.format(graph + 1): {'ε': 'q{}'.format(graph + 2)}})
+                            graph += 1
 
                             if i + 3 != '(':
-                                start = i
                                 i += 3
                                 if len(line) - 1 == i:
-                                    new_struct['q{}'.format(num_graph-1)].update({line[i]: end_q})
-                                    new_struct['q{}'.format(num_graph)].update({'ε': end_q})
+                                    new_dict['q{}'.format(graph-1)].update({line[i]: end_q})
+                                    new_dict['q{}'.format(graph)].update({'ε': end_q})
                                     try:
-                                        new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
+                                        new_dict['q{}'.format(graph)].update({line[start]: 'q{}'.format(graph)})
                                     except KeyError:
-                                        new_struct.update({'q{}'.format(num_graph): {line[start]: 'q{}'.format(num_graph)}})
+                                        new_dict.update({'q{}'.format(graph): {line[start]: 'q{}'.format(graph)}})
                                 else:
-                                    new_struct['q{}'.format(num_graph)].update({line[start]: 'q{}'.format(num_graph)})
-                                    new_struct['q{}'.format(num_graph)].update({'ε': 'q{}'.format(num_graph + 1)})
+                                    new_dict['q{}'.format(graph)].update({line[start]: 'q{}'.format(graph)})
+                                    new_dict['q{}'.format(graph)].update({'ε': 'q{}'.format(graph + 1)})
                                     try:
-                                        new_struct['q{}'.format(num_graph)].update(
-                                            {line[i]: 'q{}'.format(num_graph + 1)})
+                                        new_dict['q{}'.format(graph)].update({line[i]: 'q{}'.format(graph + 1)})
                                     except KeyError:
-                                        new_struct.update(
-                                            {'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph + 1)}})
-                            num_graph += 1
+                                        new_dict.update({'q{}'.format(graph): {line[i]: 'q{}'.format(graph + 1)}})
+                            graph += 1
                     elif i < len(line) and line[i + 1] == '|':  # случай a|b
                         if line[i + 2] != '(' and i == 0:
                             # (a|sb|i|e|r)
-                            new_struct.update({start_q: {line[i]: end_q}})
+                            new_dict.update({start_q: {line[i]: end_q}})
                             i += 2
-                            new_struct[start_q].update({line[i]: end_q})
+                            new_dict[start_q].update({line[i]: end_q})
                             while i < len(line) - 1 and line[i + 1] == '|':
                                 i += 2
-                                new_struct[start_q].update({line[i]: end_q})
+                                new_dict[start_q].update({line[i]: end_q})
                             if i != len(line) - 1:
-                                for elem in new_struct[start_q]:
-                                    new_struct[start_q].update({elem: 'q{}'.format(num_graph)})
+                                for elem in new_dict[start_q]:
+                                    new_dict[start_q].update({elem: 'q{}'.format(graph)})
                         else:
                             if line[i + 2] != '(':
-                                new_struct.update({'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph + 1)}})
+                                new_dict.update({'q{}'.format(graph): {line[i]: 'q{}'.format(graph + 1)}})
                                 i += 2
-                                new_struct['q{}'.format(num_graph)].update({line[i]: 'q{}'.format(num_graph + 1)})
+                                new_dict['q{}'.format(graph)].update({line[i]: 'q{}'.format(graph + 1)})
                                 # (z|t|z|e|p|o|i)
                                 while i < len(line) - 1 and line[i + 1] == '|':
                                     i += 2
-                                    new_struct['q{}'.format(num_graph)].update({line[i]: 'q{}'.format(num_graph + 1)})
+                                    new_dict['q{}'.format(graph)].update({line[i]: 'q{}'.format(graph + 1)})
                                 if i == len(line) - 1 or line[i] == ')':
-                                    for elem in new_struct['q{}'.format(num_graph)]:
-                                        new_struct['q{}'.format(num_graph)].update({elem: end_q})
-                                num_graph += 1
+                                    for elem in new_dict['q{}'.format(graph)]:
+                                        new_dict['q{}'.format(graph)].update({elem: end_q})
+                                graph += 1
                             elif line[i + 2] == '(':
                                 if i == 0:
-                                    new_struct.update({start_q: {line[i]: 'q{}'.format(num_graph + 1)}})
+                                    new_dict.update({start_q: {line[i]: 'q{}'.format(graph + 1)}})
                                 else:
-                                    new_struct.update({'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph + 1)}})
+                                    new_dict.update({'q{}'.format(graph): {line[i]: 'q{}'.format(graph + 1)}})
                                 start = i + 3
                                 while line[i] != ')':
                                     i += 1
                                 if i == len(line) - 1:
                                     if start - 3 == 0:
-                                        new_struct.update({start_q: {line[start-3]: end_q}})
+                                        new_dict.update({start_q: {line[start-3]: end_q}})
                                     else:
-                                        new_struct.update({'q{}'.format(num_graph): {line[start - 3]: end_q}})
-                                struct = regex_parser(line[start:i], num_graph, 'q{}'.format(num_graph), end_q)
+                                        new_dict.update({'q{}'.format(graph): {line[start - 3]: end_q}})
+                                struct = regex_parser(line[start:i], graph, 'q{}'.format(graph), end_q)
 
-                                if i == len(line) - 1 and num_graph <= 2:
-                                    new_struct['q0'].update(struct[0].get('q{}'.format(num_graph)))
-                                    struct[0].pop('q{}'.format(num_graph))
+                                if i == len(line) - 1 and graph <= 2:
+                                    new_dict['q0'].update(struct[0].get('q{}'.format(graph)))
+                                    struct[0].pop('q{}'.format(graph))
                                 # (za|(mi|e))
                                 for elem in struct[0]:
                                     try:
-                                        new_struct[elem].update(struct[0].get(elem))
+                                        new_dict[elem].update(struct[0].get(elem))
                                     except KeyError:
-                                        new_struct.update({elem: struct[0].get(elem)})
-                                num_graph = struct[1]
+                                        new_dict.update({elem: struct[0].get(elem)})
+                                graph = struct[1]
                                 if i == len(line) - 1:
                                     try:
-                                        for elem in new_struct['q{}'.format(num_graph)]:
-                                            new_struct['q{}'.format(num_graph)].update({elem: end_q})
+                                        for elem in new_dict['q{}'.format(graph)]:
+                                            new_dict['q{}'.format(graph)].update({elem: end_q})
                                     except KeyError:
                                         continue
                     elif i < len(line) - 1 and line[i + 1] == '*':
                         if i == 0:
-                            new_struct.update({start_q: {'ε': 'q{}'.format(num_graph + 1)}})
+                            new_dict.update({start_q: {'ε': 'q{}'.format(graph + 1)}})
                         else:
-                            new_struct.update({'q{}'.format(num_graph): {'ε': 'q{}'.format(num_graph + 1)}})
+                            new_dict.update({'q{}'.format(graph): {'ε': 'q{}'.format(graph + 1)}})
                         if i == len(line) - 2:
-                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': end_q}})
+                            new_dict.update({'q{}'.format(graph + 1): {'ε': end_q}})
                         else:
-                            new_struct.update({'q{}'.format(num_graph + 1): {'ε': 'q{}'.format(num_graph + 2)}})
-                        new_struct['q{}'.format(num_graph + 1)].update({line[i]: 'q{}'.format(num_graph + 1)})
-                        num_graph += 2
+                            new_dict.update({'q{}'.format(graph + 1): {'ε': 'q{}'.format(graph + 2)}})
+                        new_dict['q{}'.format(graph + 1)].update({line[i]: 'q{}'.format(graph + 1)})
+                        graph += 2
                 else:
                     if i == len(line) - 1:
                         if i == 0:
-                            new_struct.update({start_q: {line[i]: end_q}})
+                            new_dict.update({start_q: {line[i]: end_q}})
                             break
-                        new_struct.update({'q{}'.format(num_graph): {line[i]: end_q}})
+                        new_dict.update({'q{}'.format(graph): {line[i]: end_q}})
                         break
                     elif i == 0:
-                        new_struct.update({start_q: {line[i]: 'q{}'.format(num_graph + 1)}})
+                        new_dict.update({start_q: {line[i]: 'q{}'.format(graph + 1)}})
                     else:
                         # надо подумать (ad)|(mie)
-                        new_struct.update({'q{}'.format(num_graph): {line[i]: 'q{}'.format(num_graph+1)}})
-                    num_graph += 1
+                        new_dict.update({'q{}'.format(graph): {line[i]: 'q{}'.format(graph+1)}})
+                    graph += 1
             elif line[i] == '(':
                 start = i + 1
                 while line[i] != ')':
                     i += 1
 
                 if start == 1:
-                    struct = regex_parser(line[start:i + 1], num_graph, start_q, 'q{}'.format(num_graph))
-                    num_graph = struct[1]
+                    struct = regex_parser(line[start:i + 1], graph, start_q, 'q{}'.format(graph))
+                    graph = struct[1]
                     if line[i + 1] == '|' and line[i + 2] != '(':
                         if i + 2 == len(line) - 1:
-                            struct_p = regex_parser(line[i + 2], num_graph-1, start_q, end_q)
+                            struct_p = regex_parser(line[i + 2], graph-1, start_q, end_q)
                         else:
-                            struct_p = regex_parser(line[i + 2], num_graph-1, start_q, 'q{}'.format(num_graph))
-                        struct[0]['q{}'.format(num_graph-1)].update(struct_p[0].get('q{}'.format(num_graph-1)))
+                            struct_p = regex_parser(line[i + 2], graph-1, start_q, 'q{}'.format(graph))
+                        struct[0]['q{}'.format(graph-1)].update(struct_p[0].get('q{}'.format(graph-1)))
 
-                        if list(struct_p[0].get('q{}'.format(num_graph - 1)).values())[0] == 'q1':
-                            for elem in struct[0]['q{}'.format(num_graph-1)]:
-                                struct[0]['q{}'.format(num_graph-1)][elem] = 'q1'
+                        if list(struct_p[0].get('q{}'.format(graph - 1)).values())[0] == 'q1':
+                            for elem in struct[0]['q{}'.format(graph-1)]:
+                                struct[0]['q{}'.format(graph-1)][elem] = 'q1'
                         i += 2
-                        num_graph -= 1
-                    new_struct.update(struct[0])
+                        graph -= 1
+                    new_dict.update(struct[0])
                 else:
                     if i == len(line) - 1:
-                        struct = regex_parser(line[start:i], num_graph, start_q, end_q)
-                        new_struct.update(struct[0])
+                        struct = regex_parser(line[start:i], graph, start_q, end_q)
+                        new_dict.update(struct[0])
                     else:
-                        struct = regex_parser(line[start:i], num_graph, 'q{}'.format(num_graph), 'q{}'.format(num_graph))
-                        new_struct.update(struct[0])
-                num_graph = struct[1]
+                        struct = regex_parser(line[start:i], graph, 'q{}'.format(graph), 'q{}'.format(graph))
+                        new_dict.update(struct[0])
+                graph = struct[1]
             i += 1
-        return new_struct, num_graph
+        return new_dict, graph
     except Exception as ex:
         print("Exceptions in regex_parser: {}".format(ex.args[-1]))
         exit(1)
@@ -338,7 +333,6 @@ def depth_search(struct, num_graph=2):
                                 # доделать * в *
                                 for ke in list(edit_dict[0][keys[k]].keys()):
                                     if ke[p] in struct[keys[k]]:
-                                        struct
                                         second_str = edit_dict[0][keys[k]].get(ke)
                                         first_str = struct[keys[k]][ke]
                                         long_str = first_str+', '+second_str
