@@ -1,12 +1,10 @@
 from start import cin
-from NKA.parser_to_dict import brackets_parser, depth_search
+from NKA.parser_to_dict import parser_to_nka
 
 
 def main():
     # stt = cin()
-    start_dict = brackets_parser('(ab)*')
-    parser_dict = depth_search(start_dict[0], start_dict[1])
-    print(parser_dict)
+    parser_to_nka('(a|b)*')
 
 
 if __name__ == '__main__':
