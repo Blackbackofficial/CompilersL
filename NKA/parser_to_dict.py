@@ -290,6 +290,8 @@ def depth_search(struct, num_graph=2):
                             k += 1
 
                     struct[items_key[i]].pop(list_items[j])
+                    if len(struct[items_key[i]]) == 0:
+                        struct.pop(items_key[i])
                     items_key.sort()  # для упорядочевания items_key, гда элементы хранятся и дабавляются ссылки
                     num_graph = edit_dict[1]
                 j += 1
