@@ -215,6 +215,9 @@ def regex_parser(line, num_graph, start_q=None, end_q=None):
                                         continue
                 else:
                     if i == len(line) - 1:
+                        if i == 0:
+                            new_struct.update({start_q: {line[i]: end_q}})
+                            break
                         new_struct.update({'q{}'.format(num_graph): {line[i]: end_q}})
                         break
                     elif i == 0:
@@ -291,7 +294,19 @@ def depth_search(struct, num_graph=2):
                     if 1 < s_list:
                         while k < len(edit_dict[0]) and 1 < s_list:
                             try:
-                                struct[keys[k]].update(edit_dict[0].get(keys[k]))
+                                p = 0
+                                # доделать * в *
+                                for ke in list(edit_dict[0][keys[k]].keys()):
+                                    if ke[p] in struct[keys[k]]:
+                                        struct
+                                        second_str = edit_dict[0][keys[k]].get(ke)
+                                        first_str = struct[keys[k]][ke]
+                                        long_str = first_str+', '+second_str
+                                        struct[keys[k]][ke] = long_str
+                                    else:
+                                        struct[keys[k]].update(edit_dict[0].get(keys[k]))
+                                        break
+                                    p += 1
                             except KeyError:
                                 struct.update({'{}'.format(keys[k]): edit_dict[0].get(keys[k])})
                             k += 1
