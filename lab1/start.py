@@ -12,5 +12,5 @@ def cin():
 
 def start_l1():
     # stt = cin()
-    nka_dict = parser_to_nka('(aa*|bb)|(ab)')
+    nka_dict = parser_to_nka('(ix*|y*o)')
     dka_dict = parser_to_dka(nka_dict)

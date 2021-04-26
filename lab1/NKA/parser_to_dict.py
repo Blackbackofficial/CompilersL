@@ -137,9 +137,32 @@ def regex_parser(line, graph, start_q=None, end_q=None):
         while i < len(line):
             if line[i] != '|' and line[i] != '(' and line[i] != ')' and line[i] != '*':
                 if i != len(line) - 1 and (line[i + 1] == '*' or line[i + 1] == '|'):
+                    if i + 4 < len(line) and line[i + 1] == '*' and line[i + 2] == '|' and line[i + 4] == '*':
+                        if i == 0:  # случай a*|b*
+                            new_dict.update({start_q: {'ε': 'q{}'.format(graph) + ', ' + 'q{}'.format(graph + 1)}})
+                            new_dict.update({'q{}'.format(graph): {line[i]: 'q{}'.format(graph)}})
+                            new_dict['q{}'.format(graph)].update({'ε': 'q{}'.format(graph+2)})
+                            new_dict.update({'q{}'.format(graph+1): {line[i+3]: 'q{}'.format(graph + 1)}})
+                            new_dict['q{}'.format(graph+1)].update({'ε': 'q{}'.format(graph + 2)})
+                            if i + 4 == len(line) - 1:
+                                new_dict['q{}'.format(graph)]['ε'] = end_q
+                                new_dict['q{}'.format(graph + 1)]['ε'] = end_q
+                            graph += 2
+                            # i += 3
+                        else:
+                            new_dict.update({'q{}'.format(graph): {'ε': 'q{}'.format(graph+1)+', '+'q{}'.format(graph+2)}})
+                            new_dict.update({'q{}'.format(graph+1): {line[i]: 'q{}'.format(graph+1)}})
+                            new_dict['q{}'.format(graph+1)].update({'ε': 'q{}'.format(graph + 3)})
+                            new_dict.update({'q{}'.format(graph + 2): {line[i + 3]: 'q{}'.format(graph + 3)}})
+                            new_dict['q{}'.format(graph + 2)].update({'ε': 'q{}'.format(graph + 3)})
+                            if i + 4 == len(line) - 1:
+                                new_dict['q{}'.format(graph + 1)]['ε'] = end_q
+                                new_dict['q{}'.format(graph + 2)]['ε'] = end_q
+                            graph += 3
+                        i += 4
                     if i < len(line) and i + 2 < len(line) - 1 and line[i + 2] == '|':  # случай a*|b
                         start = i
-                        if i == 0:
+                        if i == 0 and start_q == 'q0':
                             new_dict.update({'q0': {'ε': 'q{}'.format(graph)}})
                             new_dict.update({'q{}'.format(graph): {'ε': 'q{}'.format(graph + 1)}})
 
@@ -182,7 +205,12 @@ def regex_parser(line, graph, start_q=None, end_q=None):
                                     except KeyError:
                                         new_dict.update({'q{}'.format(graph): {line[i]: 'q{}'.format(graph + 1)}})
                             graph += 1
-                    elif i < len(line) and line[i + 1] == '|':  # случай a|b
+                    elif i + 3 < len(line) and line[i + 1] == '|' and line[i + 3] == '*':
+                        s = line[i]
+                        e = line[i+2:i+4]
+                        line = line[:i] + e + '|' + s + line[i+4:]
+                        continue
+                    elif i < len(line) - 1 and line[i + 1] == '|':  # случай a|b
                         if line[i + 2] != '(' and i == 0:
                             # (a|sb|i|e|r)
                             new_dict.update({start_q: {line[i]: end_q}})
