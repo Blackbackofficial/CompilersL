@@ -1,9 +1,8 @@
 # Compilers Labs
 ### Lab 1.
-1. По регулярному выражению строит НКА.
-2. По НКА строит эквивалентный ему ДКА.
-3. По ДКА строит эквивалентный ему КА, имеющий наименьшее возможное количество состояний. 
-   Указание. Воспользоваться алгоритмом, приведенным по адресу
-   http://neerc.ifmo.ru/wiki/index.php?title=Алгоритм_Бржозовского
-4. Моделирует минимальный КА для входной цепочки из терминалов исходной грамматики.
-
+1. Based on a regular expression, builds an NFA.
+2. Based on the NFA, builds an equivalent DFA.
+3. Based on the DFA, constructs an equivalent FA that has the least possible number of states.
+    Instruction. Use the algorithm given at
+    http://neerc.ifmo.ru/wiki/index.php?title=Brzhozovsky_Algorithm
+4. Models the minimum CA for the input string from the terminals of the original grammar.
